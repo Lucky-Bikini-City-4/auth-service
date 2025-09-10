@@ -6,6 +6,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.time.Duration;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -14,11 +15,11 @@ public class AuthRedisRepositoryImpl implements AuthRedisRepository {
     @Value("${jwt.refresh.expiration}")
     private long refreshExpiration;
 
-    private final RedisTemplate<String, String> redisTemplate;
+    private final RedisTemplate<String, Long> redisTemplate;
 
     @Override
     public void saveRefreshToken(String refreshToken, Long userId) {
         redisTemplate.opsForValue()
-                .set(refreshToken, userId.toString(), Duration.ofMillis(refreshExpiration));
+                .set(refreshToken, userId, Duration.ofMillis(refreshExpiration));
     }
 }
