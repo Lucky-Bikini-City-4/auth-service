@@ -22,4 +22,12 @@ public class AuthRedisRepositoryImpl implements AuthRedisRepository {
         redisTemplate.opsForValue()
                 .set(refreshToken, userId, Duration.ofMillis(refreshExpiration));
     }
+
+    @Override
+    public Optional<Long> findAndDeleteByRefreshToken(String refreshToken) {
+        Long userId = redisTemplate.opsForValue()
+                .getAndDelete(refreshToken);
+
+        return Optional.ofNullable(userId);
+    }
 }
