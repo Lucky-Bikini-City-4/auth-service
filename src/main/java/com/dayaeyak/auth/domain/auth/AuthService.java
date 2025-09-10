@@ -7,7 +7,7 @@ import com.dayaeyak.auth.domain.auth.client.user.UserFeignClient;
 import com.dayaeyak.auth.domain.auth.client.user.dto.request.UserCreateRequestDto;
 import com.dayaeyak.auth.domain.auth.client.user.dto.request.UserFindByEmailRequestDto;
 import com.dayaeyak.auth.domain.auth.client.user.dto.response.UserCreateResponseDto;
-import com.dayaeyak.auth.domain.auth.client.user.dto.response.UserFindByEmailResponseDto;
+import com.dayaeyak.auth.domain.auth.client.user.dto.response.UserFindResponseDto;
 import com.dayaeyak.auth.domain.auth.dto.request.AuthLoginRequestDto;
 import com.dayaeyak.auth.domain.auth.dto.request.AuthSignupRequestDto;
 import com.dayaeyak.auth.domain.auth.dto.response.AuthLoginResponseDto;
@@ -46,11 +46,11 @@ public class AuthService {
 
     public AuthLoginResponseDto login(AuthLoginRequestDto dto) {
         // Find user by email
-        UserFindByEmailResponseDto user = userFeignClient.findUserByEmail(UserFindByEmailRequestDto.from(dto));
+        UserFindResponseDto user = userFeignClient.findUserByEmail(UserFindByEmailRequestDto.from(dto));
 
         // validate user password
         if (!passwordEncoder.matches(dto.password(), user.password())) {
-            throw new RuntimeException(AuthExceptionType.INVALID_CREDENTIALS.getMessage());
+            throw new CustomRuntimeException(AuthExceptionType.INVALID_CREDENTIALS);
         }
 
         // generate tokens
