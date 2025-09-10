@@ -7,4 +7,6 @@ public interface AuthRedisRepository {
     void saveRefreshToken(String refreshToken, Long userId);
 
     Optional<Long> findAndDeleteByRefreshToken(String refreshToken);
+
+    boolean deleteByRefreshToken(String refreshToken);
 }

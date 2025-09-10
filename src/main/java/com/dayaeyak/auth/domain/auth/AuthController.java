@@ -3,6 +3,7 @@ package com.dayaeyak.auth.domain.auth;
 import com.dayaeyak.auth.common.constraints.AuthResponseMessage;
 import com.dayaeyak.auth.common.entity.ApiResponse;
 import com.dayaeyak.auth.domain.auth.dto.request.AuthLoginRequestDto;
+import com.dayaeyak.auth.domain.auth.dto.request.AuthLogoutRequestDto;
 import com.dayaeyak.auth.domain.auth.dto.request.AuthReissueRequestDto;
 import com.dayaeyak.auth.domain.auth.dto.request.AuthSignupRequestDto;
 import com.dayaeyak.auth.domain.auth.dto.response.AuthLoginResponseDto;
@@ -49,5 +50,14 @@ public class AuthController {
         AuthReissueResponseDto data = authService.reissueAccessToken(authReissueRequestDto);
 
         return ApiResponse.success(HttpStatus.OK, AuthResponseMessage.REISSUE_SUCCESS, data);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<ApiResponse<Void>> logout(
+            @RequestBody @Valid AuthLogoutRequestDto authLogoutRequestDto
+    ) {
+        authService.logout(authLogoutRequestDto);
+
+        return ApiResponse.success(HttpStatus.OK, AuthResponseMessage.LOGOUT_SUCCESS);
     }
 }

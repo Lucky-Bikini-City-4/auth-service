@@ -10,6 +10,7 @@ import com.dayaeyak.auth.domain.auth.client.user.dto.request.UserFindByEmailRequ
 import com.dayaeyak.auth.domain.auth.client.user.dto.response.UserCreateResponseDto;
 import com.dayaeyak.auth.domain.auth.client.user.dto.response.UserFindResponseDto;
 import com.dayaeyak.auth.domain.auth.dto.request.AuthLoginRequestDto;
+import com.dayaeyak.auth.domain.auth.dto.request.AuthLogoutRequestDto;
 import com.dayaeyak.auth.domain.auth.dto.request.AuthReissueRequestDto;
 import com.dayaeyak.auth.domain.auth.dto.request.AuthSignupRequestDto;
 import com.dayaeyak.auth.domain.auth.dto.response.AuthLoginResponseDto;
@@ -78,5 +79,13 @@ public class AuthService {
         authRedisRepository.saveRefreshToken(refreshToken, user.userId());
 
         return AuthReissueResponseDto.from(accessToken, refreshToken);
+    }
+
+    public void logout(AuthLogoutRequestDto dto) {
+        boolean isDeleted = authRedisRepository.deleteByRefreshToken(dto.refreshToken());
+
+        if (!isDeleted) {
+            throw new CustomRuntimeException(AuthExceptionType.INVALID_TOKEN);
+        }
     }
 }

@@ -30,4 +30,9 @@ public class AuthRedisRepositoryImpl implements AuthRedisRepository {
 
         return Optional.ofNullable(userId);
     }
+
+    @Override
+    public boolean deleteByRefreshToken(String refreshToken) {
+        return redisTemplate.delete(refreshToken);
+    }
 }
