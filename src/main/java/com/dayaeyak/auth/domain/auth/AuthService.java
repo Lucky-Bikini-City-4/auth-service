@@ -1,5 +1,6 @@
 package com.dayaeyak.auth.domain.auth;
 
+import com.dayaeyak.auth.common.exception.CustomRuntimeException;
 import com.dayaeyak.auth.common.exception.type.AuthExceptionType;
 import com.dayaeyak.auth.common.util.JwtProvider;
 import com.dayaeyak.auth.domain.auth.cache.redis.AuthRedisRepository;
@@ -9,8 +10,10 @@ import com.dayaeyak.auth.domain.auth.client.user.dto.request.UserFindByEmailRequ
 import com.dayaeyak.auth.domain.auth.client.user.dto.response.UserCreateResponseDto;
 import com.dayaeyak.auth.domain.auth.client.user.dto.response.UserFindResponseDto;
 import com.dayaeyak.auth.domain.auth.dto.request.AuthLoginRequestDto;
+import com.dayaeyak.auth.domain.auth.dto.request.AuthReissueRequestDto;
 import com.dayaeyak.auth.domain.auth.dto.request.AuthSignupRequestDto;
 import com.dayaeyak.auth.domain.auth.dto.response.AuthLoginResponseDto;
+import com.dayaeyak.auth.domain.auth.dto.response.AuthReissueResponseDto;
 import com.dayaeyak.auth.domain.auth.dto.response.AuthSignupResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -61,5 +64,19 @@ public class AuthService {
         authRedisRepository.saveRefreshToken(refreshToken, user.userId());
 
         return AuthLoginResponseDto.from(accessToken, refreshToken);
+    }
+
+    public AuthReissueResponseDto reissueAccessToken(AuthReissueRequestDto dto) {
+        Long userId = authRedisRepository.findAndDeleteByRefreshToken(dto.refreshToken())
+                .orElseThrow(() -> new CustomRuntimeException(AuthExceptionType.INVALID_TOKEN));
+
+        UserFindResponseDto user = userFeignClient.findUserById(userId);
+
+        String accessToken = jwtProvider.generateAccessToken(user.userId(), user.role());
+        String refreshToken = jwtProvider.generateRefreshToken(user.userId());
+
+        authRedisRepository.saveRefreshToken(refreshToken, user.userId());
+
+        return AuthReissueResponseDto.from(accessToken, refreshToken);
     }
 }

@@ -7,7 +7,6 @@ public record AuthSignupResponseDto(
 ) {
 
     public static AuthSignupResponseDto from(String accessToken, String refreshToken) {
-        return new AuthSignupResponseDto(accessToken, refreshToken)
-                ;
+        return new AuthSignupResponseDto(accessToken, refreshToken);
     }
 }

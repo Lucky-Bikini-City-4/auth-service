@@ -3,8 +3,10 @@ package com.dayaeyak.auth.domain.auth;
 import com.dayaeyak.auth.common.constraints.AuthResponseMessage;
 import com.dayaeyak.auth.common.entity.ApiResponse;
 import com.dayaeyak.auth.domain.auth.dto.request.AuthLoginRequestDto;
+import com.dayaeyak.auth.domain.auth.dto.request.AuthReissueRequestDto;
 import com.dayaeyak.auth.domain.auth.dto.request.AuthSignupRequestDto;
 import com.dayaeyak.auth.domain.auth.dto.response.AuthLoginResponseDto;
+import com.dayaeyak.auth.domain.auth.dto.response.AuthReissueResponseDto;
 import com.dayaeyak.auth.domain.auth.dto.response.AuthSignupResponseDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -38,5 +40,14 @@ public class AuthController {
         AuthLoginResponseDto data = authService.login(authLoginRequestDto);
 
         return ApiResponse.success(HttpStatus.OK, AuthResponseMessage.LOGIN_SUCCESS, data);
+    }
+
+    @PostMapping("/reissue")
+    public ResponseEntity<ApiResponse<AuthReissueResponseDto>> reissue(
+            @RequestBody @Valid AuthReissueRequestDto authReissueRequestDto
+    ) {
+        AuthReissueResponseDto data = authService.reissueAccessToken(authReissueRequestDto);
+
+        return ApiResponse.success(HttpStatus.OK, AuthResponseMessage.REISSUE_SUCCESS, data);
     }
 }

@@ -5,6 +5,7 @@ public record AuthLoginResponseDto(
 
         String refreshToken
 ) {
+
     public static AuthLoginResponseDto from(String accessToken, String refreshToken) {
         return new AuthLoginResponseDto(accessToken, refreshToken);
     }
