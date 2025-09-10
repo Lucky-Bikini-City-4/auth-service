@@ -31,4 +31,7 @@ public class AuthValidationMessage {
 
     // role
     public static final String INVALID_ROLE_MESSAGE = "권한을 입력해주세요.";
+
+    // refresh token
+    public static final String INVALID_REFRESH_TOKEN_MESSAGE = "유효한 토큰을 입력해주세요.";
 }
