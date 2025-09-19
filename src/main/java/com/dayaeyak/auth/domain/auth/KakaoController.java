@@ -10,20 +10,20 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/auth/v1/kakao")
+@RequestMapping("/auth/login/kakao")
 @RequiredArgsConstructor
 public class KakaoController {
 
     private final OAuthService oAuthService;
 
-    @PostMapping("/login")
+    @PostMapping
     public ResponseEntity<ApiResponse<String>> getLoginLink() {
-        String data = oAuthService.getLoginUrl(ProviderType.KAKAO);
+        String data = oAuthService.findLoginUrl(ProviderType.KAKAO);
 
         return ApiResponse.success(HttpStatus.OK, AuthResponseMessage.KAKAO_LOGIN_LINK, data);
     }
 
-    @GetMapping("/login")
+    @GetMapping
     public ResponseEntity<ApiResponse<AuthSocialLoginResponseDto>> login(
             @RequestParam String code
     ) {

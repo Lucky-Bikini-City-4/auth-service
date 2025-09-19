@@ -39,12 +39,12 @@ public class OAuthService {
         this.authRedisRepository = authRedisRepository;
     }
 
-    public String getLoginUrl(ProviderType providerType) {
-        return getProviderStrategy(providerType).findLoginLink();
+    public String findLoginUrl(ProviderType providerType) {
+        return findProviderStrategy(providerType).findLoginLink();
     }
 
     public AuthSocialLoginResponseDto processSocialLogin(ProviderType providerType, String code) {
-        ProviderStrategy strategy = getProviderStrategy(providerType);
+        ProviderStrategy strategy = findProviderStrategy(providerType);
 
         String providerAccessToken = strategy.findAccessTokenFromProvider(code);
 
@@ -70,7 +70,7 @@ public class OAuthService {
         return AuthSocialLoginResponseDto.from(null, null);
     }
 
-    private ProviderStrategy getProviderStrategy(ProviderType providerType) {
+    private ProviderStrategy findProviderStrategy(ProviderType providerType) {
         return strategies.get(providerType);
     }
 }

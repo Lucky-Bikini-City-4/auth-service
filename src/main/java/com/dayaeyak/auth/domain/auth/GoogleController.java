@@ -10,20 +10,20 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/auth/v1/google")
+@RequestMapping("/auth/login/google")
 @RequiredArgsConstructor
 public class GoogleController {
 
     private final OAuthService oAuthService;
 
-    @PostMapping("/login")
+    @PostMapping
     public ResponseEntity<ApiResponse<String>> getLoginLink() {
-        String data = oAuthService.getLoginUrl(ProviderType.GOOGLE);
+        String data = oAuthService.findLoginUrl(ProviderType.GOOGLE);
 
         return ApiResponse.success(HttpStatus.OK, AuthResponseMessage.GOOGLE_LOGIN_LINK, data);
     }
 
-    @GetMapping("/login")
+    @GetMapping
     public ResponseEntity<ApiResponse<AuthSocialLoginResponseDto>> login(
             @RequestParam String code
     ) {
