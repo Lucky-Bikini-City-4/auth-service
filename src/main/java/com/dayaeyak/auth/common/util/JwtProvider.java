@@ -1,5 +1,6 @@
 package com.dayaeyak.auth.common.util;
 
+import com.dayaeyak.auth.domain.auth.enums.ProviderType;
 import com.dayaeyak.auth.domain.auth.enums.UserRole;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -48,6 +49,16 @@ public class JwtProvider {
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + refreshExpiration))
                 .signWith(refreshSecretKey)
+                .compact();
+    }
+
+    public String generateRegistrationToken(Long userId, ProviderType providerType, String providerId) {
+        return Jwts.builder()
+                .subject(userId.toString())
+                .claim("providerType", providerType)
+                .claim("providerId", providerId)
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + accessExpiration))
                 .compact();
     }
 }

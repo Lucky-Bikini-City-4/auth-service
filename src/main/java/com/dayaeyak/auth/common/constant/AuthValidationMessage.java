@@ -1,6 +1,8 @@
-package com.dayaeyak.auth.common.constraints;
+package com.dayaeyak.auth.common.constant;
 
 public class AuthValidationMessage {
+
+    private AuthValidationMessage() {}
 
     // email
     public static final String EMAIL_REG_EXP = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
