@@ -5,8 +5,10 @@ import com.dayaeyak.auth.common.exception.CustomRuntimeException;
 import com.dayaeyak.auth.common.exception.type.UserExceptionType;
 import com.dayaeyak.auth.domain.auth.client.user.dto.request.UserCreateRequestDto;
 import com.dayaeyak.auth.domain.auth.client.user.dto.request.UserFindByEmailRequestDto;
+import com.dayaeyak.auth.domain.auth.client.user.dto.request.UserSocialLoginRequestDto;
 import com.dayaeyak.auth.domain.auth.client.user.dto.response.UserCreateResponseDto;
 import com.dayaeyak.auth.domain.auth.client.user.dto.response.UserFindResponseDto;
+import com.dayaeyak.auth.domain.auth.client.user.dto.response.UserSocialLoginResponseDto;
 import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.openfeign.FallbackFactory;
@@ -54,6 +56,11 @@ public class UserFeignClientFallbackFactory implements FallbackFactory<UserFeign
                 }
 
                 throw new CustomRuntimeException(UserExceptionType.USER_SERVICE_UNAVAILABLE);
+            }
+
+            @Override
+            public UserSocialLoginResponseDto socialLogin(UserSocialLoginRequestDto request) {
+                return null;
             }
         };
     }
