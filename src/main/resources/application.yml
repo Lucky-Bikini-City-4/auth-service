@@ -3,4 +3,4 @@ spring:
     name: auth-service
 
   profiles:
-    active: dev, jwt
+    active: dev, jwt, oauth
