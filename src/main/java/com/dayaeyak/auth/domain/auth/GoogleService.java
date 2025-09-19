@@ -1,9 +1,16 @@
 package com.dayaeyak.auth.domain.auth;
 
 import com.dayaeyak.auth.common.properties.SocialProperties;
+import com.dayaeyak.auth.common.util.JwtProvider;
+import com.dayaeyak.auth.domain.auth.cache.redis.AuthRedisRepository;
+import com.dayaeyak.auth.domain.auth.client.user.UserFeignClient;
+import com.dayaeyak.auth.domain.auth.client.user.dto.request.UserSocialLoginRequestDto;
+import com.dayaeyak.auth.domain.auth.client.user.dto.response.UserSocialLoginResponseDto;
 import com.dayaeyak.auth.domain.auth.dto.request.AuthGoogleTokenRequestDto;
 import com.dayaeyak.auth.domain.auth.dto.response.AuthGoogleTokenResponseDto;
 import com.dayaeyak.auth.domain.auth.dto.response.AuthGoogleUserResponseDto;
+import com.dayaeyak.auth.domain.auth.dto.response.AuthSocialLoginResponseDto;
+import com.dayaeyak.auth.domain.auth.enums.ProviderType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
@@ -19,8 +26,12 @@ import org.springframework.web.client.RestTemplate;
 @RequiredArgsConstructor
 public class GoogleService {
 
+    private final JwtProvider jwtProvider;
     private final RestTemplate restTemplate;
     private final SocialProperties socialProperties;
+    private final AuthRedisRepository authRedisRepository;
+
+    private final UserFeignClient userFeignClient;
 
     public String findLoginLink() {
         return socialProperties.google().uri().authorize() +
@@ -31,11 +42,23 @@ public class GoogleService {
                 "&redirect_uri=" + socialProperties.google().uri().redirect();
     }
 
-    public void loginGoogle(String code) {
-        String accessToken = findProviderAccessToken(code);
-        AuthGoogleUserResponseDto userInfo = findProviderUserInfo(accessToken);
+    public AuthSocialLoginResponseDto loginGoogle(String code) {
+        String providerAccessToken = findProviderAccessToken(code);
+        AuthGoogleUserResponseDto userInfo = findProviderUserInfo(providerAccessToken);
 
+        ProviderType providerType = ProviderType.GOOGLE;
+        String providerId = userInfo.id();
+        String email = userInfo.email();
 
+        UserSocialLoginResponseDto user
+                = userFeignClient.socialLogin(UserSocialLoginRequestDto.from(providerType, providerId, email));
+
+        String accessToken = jwtProvider.generateAccessToken(user.userId(), user.role());
+        String refreshToken = jwtProvider.generateRefreshToken(user.userId());
+
+        authRedisRepository.saveRefreshToken(refreshToken, user.userId());
+
+        return AuthSocialLoginResponseDto.from(accessToken, refreshToken);
     }
 
     private String findProviderAccessToken(String code) {

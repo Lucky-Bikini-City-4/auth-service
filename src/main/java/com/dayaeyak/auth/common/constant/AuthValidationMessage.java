@@ -2,6 +2,8 @@ package com.dayaeyak.auth.common.constant;
 
 public class AuthValidationMessage {
 
+    private AuthValidationMessage() {}
+
     // email
     public static final String EMAIL_REG_EXP = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
     public static final String INVALID_EMAIL_MESSAGE = "올바른 이메일 형식을 입력해주세요.";

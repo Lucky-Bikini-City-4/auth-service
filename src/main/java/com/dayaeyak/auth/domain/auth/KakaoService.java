@@ -1,9 +1,16 @@
 package com.dayaeyak.auth.domain.auth;
 
 import com.dayaeyak.auth.common.properties.SocialProperties;
+import com.dayaeyak.auth.common.util.JwtProvider;
+import com.dayaeyak.auth.domain.auth.cache.redis.AuthRedisRepository;
+import com.dayaeyak.auth.domain.auth.client.user.UserFeignClient;
+import com.dayaeyak.auth.domain.auth.client.user.dto.request.UserSocialLoginRequestDto;
+import com.dayaeyak.auth.domain.auth.client.user.dto.response.UserSocialLoginResponseDto;
 import com.dayaeyak.auth.domain.auth.dto.request.AuthKakaoTokenRequestDto;
 import com.dayaeyak.auth.domain.auth.dto.response.AuthKakaoTokenResponseDto;
 import com.dayaeyak.auth.domain.auth.dto.response.AuthKakaoUserResponseDto;
+import com.dayaeyak.auth.domain.auth.dto.response.AuthSocialLoginResponseDto;
+import com.dayaeyak.auth.domain.auth.enums.ProviderType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,8 +27,12 @@ import org.springframework.web.client.RestTemplate;
 @RequiredArgsConstructor
 public class KakaoService {
 
+    private final JwtProvider jwtProvider;
     private final RestTemplate restTemplate;
     private final SocialProperties socialProperties;
+    private final AuthRedisRepository authRedisRepository;
+
+    private final UserFeignClient userFeignClient;
 
     public String findLoginLink() {
         return socialProperties.kakao().uri().authorize() +
@@ -30,9 +41,23 @@ public class KakaoService {
                 "&redirect_uri=" + socialProperties.kakao().uri().redirect();
     }
 
-    public void loginKakao(String code) {
-        String accessToken = findProviderAccessToken(code);
-        AuthKakaoUserResponseDto userInfo = findProviderUserInfo(accessToken);
+    public AuthSocialLoginResponseDto loginKakao(String code) {
+        String providerAccessToken = findProviderAccessToken(code);
+        AuthKakaoUserResponseDto userInfo = findProviderUserInfo(providerAccessToken);
+
+        ProviderType providerType = ProviderType.KAKAO;
+        String providerId = userInfo.id().toString();
+        String email = userInfo.kakaoAccount().email();
+
+        UserSocialLoginResponseDto user
+                = userFeignClient.socialLogin(UserSocialLoginRequestDto.from(providerType, providerId, email));
+
+        String accessToken = jwtProvider.generateAccessToken(user.userId(), user.role());
+        String refreshToken = jwtProvider.generateRefreshToken(user.userId());
+
+        authRedisRepository.saveRefreshToken(refreshToken, user.userId());
+
+        return AuthSocialLoginResponseDto.from(accessToken, refreshToken);
     }
 
     private String findProviderAccessToken(String code) {
