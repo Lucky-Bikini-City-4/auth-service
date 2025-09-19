@@ -1,6 +1,6 @@
 package com.dayaeyak.auth.domain.auth;
 
-import com.dayaeyak.auth.common.constraints.AuthResponseMessage;
+import com.dayaeyak.auth.common.constant.AuthResponseMessage;
 import com.dayaeyak.auth.common.entity.ApiResponse;
 import com.dayaeyak.auth.domain.auth.dto.request.AuthLoginRequestDto;
 import com.dayaeyak.auth.domain.auth.dto.request.AuthLogoutRequestDto;
