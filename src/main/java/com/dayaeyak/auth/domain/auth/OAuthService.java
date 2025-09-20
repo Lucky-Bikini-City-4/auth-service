@@ -2,15 +2,20 @@ package com.dayaeyak.auth.domain.auth;
 
 import com.dayaeyak.auth.common.util.JwtProvider;
 import com.dayaeyak.auth.domain.auth.cache.redis.AuthRedisRepository;
+import com.dayaeyak.auth.domain.auth.cache.redis.model.TempSocialUserInfo;
 import com.dayaeyak.auth.domain.auth.client.user.UserFeignClient;
+import com.dayaeyak.auth.domain.auth.client.user.dto.request.UserSocialLoginRequestDto;
+import com.dayaeyak.auth.domain.auth.client.user.dto.response.UserSocialLoginResponseDto;
 import com.dayaeyak.auth.domain.auth.dto.response.AuthProviderUserInfoResponseDto;
 import com.dayaeyak.auth.domain.auth.dto.response.AuthSocialLoginResponseDto;
 import com.dayaeyak.auth.domain.auth.enums.ProviderType;
+import com.dayaeyak.auth.domain.auth.enums.SocialLoginFlag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -54,20 +59,32 @@ public class OAuthService {
 
         log.info("{} UserInfo: {}", providerType, userInfo);
 
-//        UserSocialLoginResponseDto user = userFeignClient.socialLogin(
-//                UserSocialLoginRequestDto.from(
-//                        providerType,
-//                        userInfo.id(),
-//                        userInfo.email()
-//                )
-//        );
-//
-//        String accessToken = jwtProvider.generateAccessToken(user.userId(), user.role());
-//        String refreshToken = jwtProvider.generateRefreshToken(user.userId());
-//
-//        authRedisRepository.saveRefreshToken(refreshToken, user.userId());
+        UserSocialLoginResponseDto userResponse = userFeignClient.socialLogin(
+                UserSocialLoginRequestDto.from(
+                        providerType,
+                        userInfo.id(),
+                        userInfo.email()
+                )
+        );
 
-        return AuthSocialLoginResponseDto.from(null, null);
+        // 추가 정보 필요 -> 소셜 회원 가입
+        if (userResponse.flag().equals(SocialLoginFlag.JOIN_REQUIRED)) {
+            String tempToken = UUID.randomUUID().toString().replace("-", "");
+
+            authRedisRepository.saveSocialUserInfo(
+                    tempToken,
+                    new TempSocialUserInfo(providerType, userInfo.id(), userInfo.email())
+            );
+
+            return AuthSocialLoginResponseDto.joinRequired(tempToken);
+        }
+
+        String accessToken = jwtProvider.generateAccessToken(userResponse.userId(), userResponse.role());
+        String refreshToken = jwtProvider.generateRefreshToken(userResponse.userId());
+
+        authRedisRepository.saveRefreshToken(refreshToken, userResponse.userId());
+
+        return AuthSocialLoginResponseDto.success(accessToken, refreshToken);
     }
 
     private ProviderStrategy findProviderStrategy(ProviderType providerType) {
