@@ -4,6 +4,7 @@ import com.dayaeyak.auth.common.constant.AuthResponseMessage;
 import com.dayaeyak.auth.common.entity.ApiResponse;
 import com.dayaeyak.auth.domain.auth.dto.response.AuthSocialLoginResponseDto;
 import com.dayaeyak.auth.domain.auth.enums.ProviderType;
+import com.dayaeyak.auth.domain.auth.enums.SocialLoginFlag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +29,10 @@ public class GoogleController {
             @RequestParam String code
     ) {
         AuthSocialLoginResponseDto data = oAuthService.processSocialLogin(ProviderType.GOOGLE, code);
+
+        if (data.flag().equals(SocialLoginFlag.JOIN_REQUIRED)) {
+            return ApiResponse.success(HttpStatus.OK, AuthResponseMessage.NEED_SIGNUP_BY_SOCIAL, data);
+        }
 
         return ApiResponse.success(HttpStatus.OK, AuthResponseMessage.GOOGLE_LOGIN, data);
     }
