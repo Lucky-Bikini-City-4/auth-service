@@ -76,7 +76,7 @@ public class OAuthService {
                     new TempSocialUserInfo(providerType, userInfo.id(), userInfo.email())
             );
 
-            return AuthSocialLoginResponseDto.joinRequired(tempToken);
+            return AuthSocialLoginResponseDto.joinRequired(providerType, tempToken);
         }
 
         String accessToken = jwtProvider.generateAccessToken(userResponse.userId(), userResponse.role());
@@ -84,7 +84,7 @@ public class OAuthService {
 
         authRedisRepository.saveRefreshToken(refreshToken, userResponse.userId());
 
-        return AuthSocialLoginResponseDto.success(accessToken, refreshToken);
+        return AuthSocialLoginResponseDto.success(providerType, accessToken, refreshToken);
     }
 
     private ProviderStrategy findProviderStrategy(ProviderType providerType) {
