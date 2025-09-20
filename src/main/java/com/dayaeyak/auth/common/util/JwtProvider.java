@@ -51,14 +51,4 @@ public class JwtProvider {
                 .signWith(refreshSecretKey)
                 .compact();
     }
-
-    public String generateRegistrationToken(Long userId, ProviderType providerType, String providerId) {
-        return Jwts.builder()
-                .subject(userId.toString())
-                .claim("providerType", providerType)
-                .claim("providerId", providerId)
-                .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + accessExpiration))
-                .compact();
-    }
 }

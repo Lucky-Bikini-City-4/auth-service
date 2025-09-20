@@ -1,5 +1,6 @@
 package com.dayaeyak.auth.domain.auth.cache.redis;
 
+import com.dayaeyak.auth.domain.auth.cache.redis.model.TempSocialUserInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -15,24 +16,43 @@ public class AuthRedisRepositoryImpl implements AuthRedisRepository {
     @Value("${jwt.refresh.expiration}")
     private long refreshExpiration;
 
-    private final RedisTemplate<String, Long> redisTemplate;
+    private final RedisTemplate<String, Object> redisTemplate;
 
     @Override
     public void saveRefreshToken(String refreshToken, Long userId) {
+        Duration ttl = Duration.ofMillis(refreshExpiration);
+
         redisTemplate.opsForValue()
-                .set(refreshToken, userId, Duration.ofMillis(refreshExpiration));
+                .set(refreshToken, userId, ttl);
     }
 
     @Override
     public Optional<Long> findAndDeleteByRefreshToken(String refreshToken) {
-        Long userId = redisTemplate.opsForValue()
+        Object data = redisTemplate.opsForValue()
                 .getAndDelete(refreshToken);
 
-        return Optional.ofNullable(userId);
+        if (data instanceof Number number) {
+            return Optional.of(number.longValue());
+        }
+
+        return Optional.empty();
     }
 
     @Override
     public boolean deleteByRefreshToken(String refreshToken) {
         return redisTemplate.delete(refreshToken);
+    }
+
+    @Override
+    public void saveSocialUserInfo(String tempToken, TempSocialUserInfo tempSocialUserInfo) {
+        Duration ttl = Duration.ofMinutes(30);
+
+        redisTemplate.opsForValue()
+                .set(tempToken, tempSocialUserInfo, ttl);
+    }
+
+    @Override
+    public void deleteSocialUserInfo(String tempToken) {
+        redisTemplate.delete(tempToken);
     }
 }

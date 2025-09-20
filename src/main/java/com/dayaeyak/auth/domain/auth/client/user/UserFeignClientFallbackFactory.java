@@ -60,7 +60,7 @@ public class UserFeignClientFallbackFactory implements FallbackFactory<UserFeign
 
             @Override
             public UserSocialLoginResponseDto socialLogin(UserSocialLoginRequestDto request) {
-                return null;
+                throw new CustomRuntimeException(UserExceptionType.USER_SERVICE_UNAVAILABLE);
             }
         };
     }
