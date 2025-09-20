@@ -44,8 +44,8 @@ public class OAuthService {
         this.authRedisRepository = authRedisRepository;
     }
 
-    public String findLoginUrl(ProviderType providerType) {
-        return findProviderStrategy(providerType).findLoginLink();
+    public String findLoginPath(ProviderType providerType) {
+        return findProviderStrategy(providerType).findLoginPath();
     }
 
     public AuthSocialLoginResponseDto processSocialLogin(ProviderType providerType, String code) {

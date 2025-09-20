@@ -23,7 +23,7 @@ public class GoogleStrategy implements ProviderStrategy {
     private final SocialProperties socialProperties;
 
     @Override
-    public String findLoginLink() {
+    public String findLoginPath() {
         return socialProperties.google().uri().authorize() +
                 "?client_id=" + socialProperties.google().client().id() +
                 "&response_type=code" +

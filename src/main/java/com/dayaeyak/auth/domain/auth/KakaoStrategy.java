@@ -23,7 +23,7 @@ public class KakaoStrategy implements ProviderStrategy {
     private final SocialProperties socialProperties;
 
     @Override
-    public String findLoginLink() {
+    public String findLoginPath() {
         return socialProperties.kakao().uri().authorize() +
                 "?response_type=code" +
                 "&client_id=" + socialProperties.kakao().client().id() +

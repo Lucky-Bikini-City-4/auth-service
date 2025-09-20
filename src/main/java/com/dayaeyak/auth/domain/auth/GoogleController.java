@@ -17,8 +17,8 @@ public class GoogleController {
     private final OAuthService oAuthService;
 
     @PostMapping
-    public ResponseEntity<ApiResponse<String>> getLoginLink() {
-        String data = oAuthService.findLoginUrl(ProviderType.GOOGLE);
+    public ResponseEntity<ApiResponse<String>> getLoginPath() {
+        String data = oAuthService.findLoginPath(ProviderType.GOOGLE);
 
         return ApiResponse.success(HttpStatus.OK, AuthResponseMessage.GOOGLE_LOGIN_LINK, data);
     }
