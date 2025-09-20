@@ -23,7 +23,7 @@ public class GoogleController {
         return ApiResponse.success(HttpStatus.OK, AuthResponseMessage.GOOGLE_LOGIN_LINK, data);
     }
 
-    @GetMapping
+    @GetMapping("/callback")
     public ResponseEntity<ApiResponse<AuthSocialLoginResponseDto>> login(
             @RequestParam String code
     ) {

@@ -23,7 +23,7 @@ public class KakaoController {
         return ApiResponse.success(HttpStatus.OK, AuthResponseMessage.KAKAO_LOGIN_LINK, data);
     }
 
-    @GetMapping
+    @GetMapping("/callback")
     public ResponseEntity<ApiResponse<AuthSocialLoginResponseDto>> login(
             @RequestParam String code
     ) {
