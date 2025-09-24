@@ -1,6 +1,6 @@
 package com.dayaeyak.auth.domain.auth.dto.request;
 
-import com.dayaeyak.auth.common.constraints.AuthValidationMessage;
+import com.dayaeyak.auth.common.constant.AuthValidationMessage;
 import jakarta.validation.constraints.NotBlank;
 
 public record AuthReissueRequestDto(

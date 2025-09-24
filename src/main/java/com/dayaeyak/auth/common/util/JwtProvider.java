@@ -1,5 +1,6 @@
 package com.dayaeyak.auth.common.util;
 
+import com.dayaeyak.auth.domain.auth.enums.ProviderType;
 import com.dayaeyak.auth.domain.auth.enums.UserRole;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;

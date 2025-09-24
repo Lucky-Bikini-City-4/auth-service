@@ -1,6 +1,6 @@
 package com.dayaeyak.auth.domain.auth;
 
-import com.dayaeyak.auth.common.constraints.AuthResponseMessage;
+import com.dayaeyak.auth.common.constant.AuthResponseMessage;
 import com.dayaeyak.auth.common.entity.ApiResponse;
 import com.dayaeyak.auth.domain.auth.dto.request.AuthLoginRequestDto;
 import com.dayaeyak.auth.domain.auth.dto.request.AuthLogoutRequestDto;
@@ -31,7 +31,7 @@ public class AuthController {
     ) {
         AuthSignupResponseDto data = authService.signup(authSignUpRequestDto);
 
-        return ApiResponse.success(HttpStatus.CREATED, AuthResponseMessage.SIGNUP_SUCCESS, data);
+        return ApiResponse.success(HttpStatus.CREATED, AuthResponseMessage.SIGNUP, data);
     }
 
     @PostMapping("/login")
@@ -40,7 +40,7 @@ public class AuthController {
     ) {
         AuthLoginResponseDto data = authService.login(authLoginRequestDto);
 
-        return ApiResponse.success(HttpStatus.OK, AuthResponseMessage.LOGIN_SUCCESS, data);
+        return ApiResponse.success(HttpStatus.OK, AuthResponseMessage.LOGIN, data);
     }
 
     @PostMapping("/reissue")
@@ -49,7 +49,7 @@ public class AuthController {
     ) {
         AuthReissueResponseDto data = authService.reissueAccessToken(authReissueRequestDto);
 
-        return ApiResponse.success(HttpStatus.OK, AuthResponseMessage.REISSUE_SUCCESS, data);
+        return ApiResponse.success(HttpStatus.OK, AuthResponseMessage.REISSUE, data);
     }
 
     @PostMapping("/logout")
@@ -58,6 +58,6 @@ public class AuthController {
     ) {
         authService.logout(authLogoutRequestDto);
 
-        return ApiResponse.success(HttpStatus.OK, AuthResponseMessage.LOGOUT_SUCCESS);
+        return ApiResponse.success(HttpStatus.OK, AuthResponseMessage.LOGOUT);
     }
 }
