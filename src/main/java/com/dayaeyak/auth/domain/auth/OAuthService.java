@@ -59,11 +59,7 @@ public class OAuthService {
 
         String providerAccessToken = strategy.findAccessTokenFromProvider(code);
 
-        log.info("{} AccessToken: {}", providerType, providerAccessToken);
-
         AuthProviderUserInfoResponseDto userInfo = strategy.findUserInfoFromProvider(providerAccessToken);
-
-        log.info("{} UserInfo: {}", providerType, userInfo);
 
         UserSocialLoginResponseDto userResponse = userFeignClient.socialLogin(
                 UserSocialLoginRequestDto.from(
