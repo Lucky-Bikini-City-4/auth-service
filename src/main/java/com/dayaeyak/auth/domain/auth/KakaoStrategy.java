@@ -1,5 +1,7 @@
 package com.dayaeyak.auth.domain.auth;
 
+import com.dayaeyak.auth.common.exception.CustomRuntimeException;
+import com.dayaeyak.auth.common.exception.type.OAuthExceptionType;
 import com.dayaeyak.auth.common.properties.SocialProperties;
 import com.dayaeyak.auth.domain.auth.dto.request.AuthKakaoTokenRequestDto;
 import com.dayaeyak.auth.domain.auth.dto.response.AuthKakaoTokenResponseDto;
@@ -23,7 +25,7 @@ public class KakaoStrategy implements ProviderStrategy {
     private final SocialProperties socialProperties;
 
     @Override
-    public String findLoginLink() {
+    public String findLoginPath() {
         return socialProperties.kakao().uri().authorize() +
                 "?response_type=code" +
                 "&client_id=" + socialProperties.kakao().client().id() +
@@ -48,6 +50,13 @@ public class KakaoStrategy implements ProviderStrategy {
         ResponseEntity<AuthKakaoTokenResponseDto> tokenResponse = restTemplate.postForEntity(socialProperties.kakao().uri().token(),
                 tokenHttpRequest, AuthKakaoTokenResponseDto.class);
 
+        if (tokenResponse.getStatusCode().is2xxSuccessful()
+                || tokenResponse.getBody() == null
+                || tokenResponse.getBody().accessToken() == null
+        ) {
+            throw new CustomRuntimeException(OAuthExceptionType.FAIL_TO_CALL_KAKAO_SERVER);
+        }
+
         return tokenResponse.getBody().accessToken();
     }
 
@@ -65,6 +74,10 @@ public class KakaoStrategy implements ProviderStrategy {
                 httpEntity,
                 AuthKakaoUserResponseDto.class
         );
+
+        if (userResponse.getStatusCode().is2xxSuccessful() || userResponse.getBody() == null) {
+            throw new CustomRuntimeException(OAuthExceptionType.FAIL_TO_CALL_KAKAO_SERVER);
+        }
 
         AuthKakaoUserResponseDto userInfo = userResponse.getBody();
 

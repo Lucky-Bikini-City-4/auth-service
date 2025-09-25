@@ -2,13 +2,11 @@ package com.dayaeyak.auth.domain.auth;
 
 import com.dayaeyak.auth.common.constant.AuthResponseMessage;
 import com.dayaeyak.auth.common.entity.ApiResponse;
-import com.dayaeyak.auth.domain.auth.dto.request.AuthLoginRequestDto;
-import com.dayaeyak.auth.domain.auth.dto.request.AuthLogoutRequestDto;
-import com.dayaeyak.auth.domain.auth.dto.request.AuthReissueRequestDto;
-import com.dayaeyak.auth.domain.auth.dto.request.AuthSignupRequestDto;
+import com.dayaeyak.auth.domain.auth.dto.request.*;
 import com.dayaeyak.auth.domain.auth.dto.response.AuthLoginResponseDto;
 import com.dayaeyak.auth.domain.auth.dto.response.AuthReissueResponseDto;
 import com.dayaeyak.auth.domain.auth.dto.response.AuthSignupResponseDto;
+import com.dayaeyak.auth.domain.auth.dto.response.AuthSocialSignupResponseDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final AuthService authService;
+    private final OAuthService oAuthService;
 
     @PostMapping("/signup")
     public ResponseEntity<ApiResponse<AuthSignupResponseDto>> signup(
@@ -59,5 +58,14 @@ public class AuthController {
         authService.logout(authLogoutRequestDto);
 
         return ApiResponse.success(HttpStatus.OK, AuthResponseMessage.LOGOUT);
+    }
+
+    @PostMapping("/signup/social")
+    public ResponseEntity<ApiResponse<AuthSocialSignupResponseDto>> socialSignup(
+            @RequestBody @Valid AuthSocialSignupRequestDto authSocialSignupRequestDto
+    ) {
+        AuthSocialSignupResponseDto data = oAuthService.processSocialSignup(authSocialSignupRequestDto);
+
+        return ApiResponse.success(HttpStatus.CREATED, AuthResponseMessage.SOCIAL_SIGNUP, data);
     }
 }

@@ -52,7 +52,14 @@ public class AuthRedisRepositoryImpl implements AuthRedisRepository {
     }
 
     @Override
-    public void deleteSocialUserInfo(String tempToken) {
-        redisTemplate.delete(tempToken);
+    public Optional<TempSocialUserInfo> findAndDeleteSocialUserInfo(String tempToken) {
+        Object data = redisTemplate.opsForValue()
+                .getAndDelete(tempToken);
+
+        if (data instanceof TempSocialUserInfo tempSocialUserInfo) {
+            return Optional.of(tempSocialUserInfo);
+        }
+
+        return Optional.empty();
     }
 }
