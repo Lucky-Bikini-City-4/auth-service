@@ -5,7 +5,7 @@ import com.dayaeyak.auth.domain.auth.enums.ProviderType;
 
 public interface ProviderStrategy {
 
-    String findLoginLink();
+    String findLoginPath();
 
     String findAccessTokenFromProvider(String code);
 

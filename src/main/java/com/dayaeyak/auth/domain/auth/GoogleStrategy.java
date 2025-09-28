@@ -1,5 +1,7 @@
 package com.dayaeyak.auth.domain.auth;
 
+import com.dayaeyak.auth.common.exception.CustomRuntimeException;
+import com.dayaeyak.auth.common.exception.type.OAuthExceptionType;
 import com.dayaeyak.auth.common.properties.SocialProperties;
 import com.dayaeyak.auth.domain.auth.dto.request.AuthGoogleTokenRequestDto;
 import com.dayaeyak.auth.domain.auth.dto.response.AuthGoogleTokenResponseDto;
@@ -23,7 +25,7 @@ public class GoogleStrategy implements ProviderStrategy {
     private final SocialProperties socialProperties;
 
     @Override
-    public String findLoginLink() {
+    public String findLoginPath() {
         return socialProperties.google().uri().authorize() +
                 "?client_id=" + socialProperties.google().client().id() +
                 "&response_type=code" +
@@ -45,6 +47,13 @@ public class GoogleStrategy implements ProviderStrategy {
         ResponseEntity<AuthGoogleTokenResponseDto> tokenResponse = restTemplate.postForEntity(socialProperties.google().uri().token(),
                 tokenRequest, AuthGoogleTokenResponseDto.class);
 
+        if (!tokenResponse.getStatusCode().is2xxSuccessful()
+                || tokenResponse.getBody() == null
+                || tokenResponse.getBody().accessToken() == null
+        ) {
+            throw new CustomRuntimeException(OAuthExceptionType.FAIL_TO_CALL_GOOGLE_SERVER);
+        }
+
         return tokenResponse.getBody().accessToken();
     }
 
@@ -55,14 +64,18 @@ public class GoogleStrategy implements ProviderStrategy {
 
         HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(userRequestHeaders);
 
-        ResponseEntity<AuthGoogleUserResponseDto> result = restTemplate.exchange(
+        ResponseEntity<AuthGoogleUserResponseDto> userResponse = restTemplate.exchange(
                 socialProperties.google().uri().user(),
                 HttpMethod.GET,
                 httpEntity,
                 AuthGoogleUserResponseDto.class
         );
 
-        AuthGoogleUserResponseDto userInfo = result.getBody();
+        if (!userResponse.getStatusCode().is2xxSuccessful() || userResponse.getBody() == null) {
+            throw new CustomRuntimeException(OAuthExceptionType.FAIL_TO_CALL_GOOGLE_SERVER);
+        }
+
+        AuthGoogleUserResponseDto userInfo = userResponse.getBody();
 
         return AuthProviderUserInfoResponseDto.from(userInfo.id(), userInfo.email());
     }

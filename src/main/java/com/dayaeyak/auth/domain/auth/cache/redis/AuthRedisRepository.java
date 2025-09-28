@@ -2,6 +2,7 @@ package com.dayaeyak.auth.domain.auth.cache.redis;
 
 import com.dayaeyak.auth.domain.auth.cache.redis.model.TempSocialUserInfo;
 
+import javax.swing.text.html.Option;
 import java.util.Optional;
 
 public interface AuthRedisRepository {
@@ -14,5 +15,5 @@ public interface AuthRedisRepository {
 
     void saveSocialUserInfo(String tempToken, TempSocialUserInfo tempSocialUserInfo);
 
-    void deleteSocialUserInfo(String tempToken);
+    Optional<TempSocialUserInfo> findAndDeleteSocialUserInfo(String tempToken);
 }
