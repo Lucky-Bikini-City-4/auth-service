@@ -28,7 +28,7 @@ https://docs.google.com/spreadsheets/d/1erfJV-eh3TtUMcaTJLLNou-vhwnxBvB4MV5cJ72-
      - 만약 소셜 서비스의 이메일이 미가입된 이메일이거나 연동되지 않은 이메일일 경우 소셜 회원가입 진행
      - UUID를 생성하여 소셜 서비스 계정 정보 Redis에 임시 저장(30분)
 - 시퀀스 다이어그램
-    ![소셜_로그인](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdna%2Fby3zyi%2FbtsQZPUviYI%2FAAAAAAAAAAAAAAAAAAAAALGNJhxunnOkKM3mtARqZyYPv9SzX-qjyVHF05vv66me%2Fimg.png%3Fcredential%3DyqXZFxpELC7KVnFOS48ylbz2pIh7yKj8%26expires%3D1761922799%26allow_ip%3D%26allow_referer%3D%26signature%3DNucY%252Fy7J83V3sGMLZI%252BLuBrAP3s%253D)
+    ![소셜_로그인](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdna%2Fb2fci8%2FbtsQZlMT7G5%2FAAAAAAAAAAAAAAAAAAAAALF7T_Z5QlmY3lxbLppCQLcW_vDGTdYDnL5GrwobZPiu%2Fimg.png%3Fcredential%3DyqXZFxpELC7KVnFOS48ylbz2pIh7yKj8%26expires%3D1761922799%26allow_ip%3D%26allow_referer%3D%26signature%3DVvhAl8U0p9sCXahPoxDI68Nd9T0%253D)
 
 #### 소셜 회원가입 및 연동
 - 소셜 로그인 시 소셜 서비스의 이메일이 미가입된 이메일이거나 연동되지 않은 이메일일 경우 소셜 회원가입 진행
