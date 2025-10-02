@@ -9,6 +9,7 @@ import com.dayaeyak.auth.domain.auth.dto.response.AuthGoogleUserResponseDto;
 import com.dayaeyak.auth.domain.auth.dto.response.AuthProviderUserInfoResponseDto;
 import com.dayaeyak.auth.domain.auth.enums.ProviderType;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class GoogleStrategy implements ProviderStrategy {
@@ -44,6 +46,7 @@ public class GoogleStrategy implements ProviderStrategy {
                 .grantType("authorization_code")
                 .build();
 
+        log.info("connect to GoogleServer for AccessToken");
         ResponseEntity<AuthGoogleTokenResponseDto> tokenResponse = restTemplate.postForEntity(socialProperties.google().uri().token(),
                 tokenRequest, AuthGoogleTokenResponseDto.class);
 
@@ -64,6 +67,7 @@ public class GoogleStrategy implements ProviderStrategy {
 
         HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(userRequestHeaders);
 
+        log.info("connect to GoogleServer for UserInfo");
         ResponseEntity<AuthGoogleUserResponseDto> userResponse = restTemplate.exchange(
                 socialProperties.google().uri().user(),
                 HttpMethod.GET,
