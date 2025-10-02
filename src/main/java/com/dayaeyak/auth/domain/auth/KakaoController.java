@@ -17,7 +17,7 @@ public class KakaoController {
 
     private final OAuthService oAuthService;
 
-    @PostMapping
+    @GetMapping
     public ResponseEntity<ApiResponse<String>> getLoginPath() {
         String data = oAuthService.findLoginPath(ProviderType.KAKAO);
 

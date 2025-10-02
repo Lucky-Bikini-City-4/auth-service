@@ -17,7 +17,7 @@ public class GoogleController {
 
     private final OAuthService oAuthService;
 
-    @PostMapping
+    @GetMapping
     public ResponseEntity<ApiResponse<String>> getLoginPath() {
         String data = oAuthService.findLoginPath(ProviderType.GOOGLE);
 

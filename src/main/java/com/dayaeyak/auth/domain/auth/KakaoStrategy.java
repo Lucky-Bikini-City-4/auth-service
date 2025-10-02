@@ -9,6 +9,7 @@ import com.dayaeyak.auth.domain.auth.dto.response.AuthKakaoUserResponseDto;
 import com.dayaeyak.auth.domain.auth.dto.response.AuthProviderUserInfoResponseDto;
 import com.dayaeyak.auth.domain.auth.enums.ProviderType;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class KakaoStrategy implements ProviderStrategy {
@@ -47,6 +49,7 @@ public class KakaoStrategy implements ProviderStrategy {
 
         HttpEntity<MultiValueMap<String, String>> tokenHttpRequest = new HttpEntity<>(tokenRequest.toMultivaluedMap(), tokenRequestHeaders);
 
+        log.info("connect to KakaoServer for accessToken");
         ResponseEntity<AuthKakaoTokenResponseDto> tokenResponse = restTemplate.postForEntity(socialProperties.kakao().uri().token(),
                 tokenHttpRequest, AuthKakaoTokenResponseDto.class);
 
@@ -68,6 +71,7 @@ public class KakaoStrategy implements ProviderStrategy {
 
         HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(userRequestHeaders);
 
+        log.info("connect to KakaoServer for UserInfo");
         ResponseEntity<AuthKakaoUserResponseDto> userResponse = restTemplate.exchange(
                 socialProperties.kakao().uri().user(),
                 HttpMethod.GET,
