@@ -27,8 +27,12 @@ https://docs.google.com/spreadsheets/d/1erfJV-eh3TtUMcaTJLLNou-vhwnxBvB4MV5cJ72-
   5. 해당 정보로 로그인 진행
      - 만약 소셜 서비스의 이메일이 미가입된 이메일이거나 연동되지 않은 이메일일 경우 소셜 회원가입 진행
      - UUID를 생성하여 소셜 서비스 계정 정보 Redis에 임시 저장(30분)
+- 시퀀스 다이어그램
+    ![소셜_로그인](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdna%2Fby3zyi%2FbtsQZPUviYI%2FAAAAAAAAAAAAAAAAAAAAALGNJhxunnOkKM3mtARqZyYPv9SzX-qjyVHF05vv66me%2Fimg.png%3Fcredential%3DyqXZFxpELC7KVnFOS48ylbz2pIh7yKj8%26expires%3D1761922799%26allow_ip%3D%26allow_referer%3D%26signature%3DNucY%252Fy7J83V3sGMLZI%252BLuBrAP3s%253D)
 
 #### 소셜 회원가입 및 연동
 - 소셜 로그인 시 소셜 서비스의 이메일이 미가입된 이메일이거나 연동되지 않은 이메일일 경우 소셜 회원가입 진행
 - 요청 바디에 포함된 UUID key 값으로 임시 저장된 소셜 서비스 계정 정보를 얻고 User Service에 소셜 회원가입 요청
 - User Service에서 회원가입 진행 후 AccessToken, RefreshToken 반환
+- 시퀀스 다이어그램
+  ![소셜_회원가입](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdna%2FcZgJJ5%2FbtsQ1xFl380%2FAAAAAAAAAAAAAAAAAAAAAAMl-38FqGNzDaTJnqjusUFX2iJEoC_PFDrC7xO13yKP%2Fimg.png%3Fcredential%3DyqXZFxpELC7KVnFOS48ylbz2pIh7yKj8%26expires%3D1761922799%26allow_ip%3D%26allow_referer%3D%26signature%3Dk0MmWHSZzOGJAO6g1gtSYvp0mY4%253D)
