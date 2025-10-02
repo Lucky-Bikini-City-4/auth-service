@@ -3,4 +3,7 @@ spring:
     name: auth-service
 
   profiles:
-    active: dev, jwt, oauth
+    active: local
+    group:
+      local: dev, jwt, oauth
+      deploy: prod, jwt, oauth
